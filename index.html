@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tiny Fish — ManageAI AI Intelligence</title>
+  <title>AI News Concierge — ManageAI</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     /* ============================================================
@@ -311,7 +311,7 @@
   <div class="login-card">
     <div class="login-logo">
       <div class="brand"><span class="m">MANAGE</span><span class="ai">AI</span></div>
-      <div class="tag">Tiny Fish</div>
+      <div class="tag">AI News Concierge</div>
     </div>
     <div class="login-title">Good morning</div>
     <div class="login-sub">Sign in to access the AI Intelligence Dashboard</div>
@@ -337,8 +337,8 @@
     <div class="wordmark"><span class="m">MANAGE</span><span class="ai">AI</span></div>
     <div class="h-div"></div>
     <div class="h-meta">
-      <div class="h-title">🐟 Tiny Fish — AI Intelligence</div>
-      <div class="h-sub">manageai.io · internal · daily brief</div>
+      <div class="h-title">AI News Concierge</div>
+      <div class="h-sub">manageai.io · ai news concierge</div>
     </div>
     <div class="h-status">
       <div class="h-dot"></div>
@@ -435,7 +435,7 @@
         <div class="chat-header">
           <div class="chat-dot"></div>
           <div>
-            <div class="chat-header-name">Tiny Fish AI</div>
+            <div class="chat-header-name">AI News Concierge</div>
             <div class="chat-header-sub" id="chat-context-label">Connected to today's brief · Ask me anything</div>
           </div>
         </div>
@@ -474,7 +474,7 @@
       <!-- Add source form -->
       <div class="card">
         <div class="card-title">Add New Source</div>
-        <div class="card-sub">Add a blog or website for Tiny Fish to monitor daily.</div>
+        <div class="card-sub">Add a blog or website for AI News Concierge to monitor daily.</div>
         <div class="field">
           <label>Source Name</label>
           <input type="text" id="new-source-name" placeholder="Google DeepMind Blog" />
@@ -510,7 +510,7 @@
     <div class="run-trigger-card">
       <div>
         <div class="run-trigger-title">🚀 Manual Run</div>
-        <div class="run-trigger-sub">Trigger all 7 Tiny Fish workflows right now — bypasses the 6 AM scheduler</div>
+        <div class="run-trigger-sub">Trigger all 7 AI News Concierge workflows right now — bypasses the 6 AM scheduler</div>
       </div>
       <button class="btn-run" id="btn-manual-run" onclick="triggerManualRun()">Run Pipeline Now</button>
     </div>
@@ -561,7 +561,7 @@
   <div class="footer">
     <div style="display:flex;align-items:center;gap:6px;">
       <div class="footer-brand"><span class="m">MANAGE</span><span class="ai">AI</span></div>
-      <span class="footer-meta"> · Tiny Fish v1.0 · <span id="footer-date"></span></span>
+      <span class="footer-meta"> · AI News Concierge v1.0 ·<span id="footer-date"></span></span>
     </div>
     <div style="font-size:10px;font-weight:700;color:var(--text-dim);font-family:var(--mono);">INTERNAL — MANAGEAI TEAM ONLY</div>
   </div>
@@ -750,7 +750,7 @@ function renderEmptyBrief(date) {
     <div class="brief-wrap">
       <div class="brief-header">
         <div class="brief-wordmark">MANAGE<span>AI</span></div>
-        <div class="brief-subtitle">Tiny Fish // AI Intelligence Brief</div>
+        <div class="brief-subtitle">AI NEWS CONCIERGE // DAILY BRIEF</div>
         <div class="brief-date-row">
           <div class="brief-date">${formatDate(date)}</div>
         </div>
@@ -760,7 +760,7 @@ function renderEmptyBrief(date) {
         <div style="color:var(--brief-text);font-size:16px;font-weight:700;margin-bottom:8px;">No brief yet for this date</div>
         <div style="color:var(--brief-dim);font-size:13px;margin-bottom:20px;">The pipeline runs automatically at 6 AM, or you can trigger it manually from the Admin tab.</div>
       </div>
-      <div class="brief-footer">TINY FISH by MANAGE<span>AI</span> &nbsp;·&nbsp; ${date} &nbsp;·&nbsp; Powered by Claude</div>
+      <div class="brief-footer">AI NEWS CONCIERGE by MANAGE<span>AI</span> &nbsp;·&nbsp; ${date} &nbsp;·&nbsp; Powered by Claude</div>
     </div>`;
 }
 
@@ -784,7 +784,7 @@ function renderBrief(date, articles, report) {
     <div class="brief-wrap">
       <div class="brief-header">
         <div class="brief-wordmark">MANAGE<span>AI</span></div>
-        <div class="brief-subtitle">Tiny Fish // AI Intelligence Brief</div>
+        <div class="brief-subtitle">AI NEWS CONCIERGE // DAILY BRIEF</div>
         <div class="brief-date-row">
           <div class="brief-date">${formatDate(date)}</div>
           <div class="brief-pills">
@@ -817,7 +817,7 @@ function renderBrief(date, articles, report) {
   }
 
   html += `</div>
-      <div class="brief-footer">TINY FISH by MANAGE<span>AI</span> &nbsp;·&nbsp; ${date} &nbsp;·&nbsp; Powered by Claude &nbsp;·&nbsp; ${articles.length} articles analyzed</div>
+      <div class="brief-footer">AI NEWS CONCIERGE by MANAGE<span>AI</span> &nbsp;·&nbsp; ${date} &nbsp;·&nbsp; Powered by Claude &nbsp;·&nbsp; ${articles.length} articles analyzed</div>
     </div>`;
 
   document.getElementById('brief-container').innerHTML = html;
@@ -964,7 +964,7 @@ async function sendChatMessage() {
   chatHistory.push({ role: 'user', content: msg });
 
   try {
-    const systemPrompt = `You are Tiny Fish, ManageAI's internal AI research intelligence system. You help the ManageAI team (an AI automation agency) stay current on AI news and assess its relevance to their clients.
+    const systemPrompt = `You are AI News Concierge, ManageAI's internal AI research intelligence system. You help the ManageAI team (an AI automation agency) stay current on AI news and assess its relevance to their clients.
 
 ManageAI builds n8n, Make.com, and Claude AI agent systems for SMB clients in behavioral health, construction, and medical transport.
 
@@ -1016,7 +1016,7 @@ function appendChatMessage(role, text) {
     div.className = 'msg-row';
     div.innerHTML = `
       <div>
-        <div class="msg-meta">Tiny Fish &nbsp;·&nbsp; ${now}</div>
+        <div class="msg-meta">AI News Concierge &nbsp;·&nbsp; ${now}</div>
         <div class="msg-bubble assistant">${text.replace(/\n/g,'<br>')}</div>
       </div>`;
   }
