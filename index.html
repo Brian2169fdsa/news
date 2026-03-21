@@ -56,12 +56,12 @@
       --mono:         'JetBrains Mono', monospace;
       --font:         'Montserrat', sans-serif;
       /* Brief dark theme vars */
-      --brief-bg:     #070d13;
-      --brief-card:   #0f1923;
-      --brief-header: #0a1628;
-      --brief-border: #1e3a5f;
-      --brief-text:   #e2e8f0;
-      --brief-dim:    #94a3b8;
+      --brief-bg:     #FFFFFF;
+      --brief-card:   #F5F6F8;
+      --brief-header: #F5F6F8;
+      --brief-border: #E2E6EC;
+      --brief-text:   #1E293B;
+      --brief-dim:    #475569;
     }
     body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
     input, select, textarea, button { font-family: var(--font); }
@@ -139,18 +139,18 @@
     .badge-muted { background: var(--surface); color: var(--text-dim); }
 
     /* ===== TODAY BRIEF ===== */
-    .brief-wrap { background: var(--brief-bg); border-radius: 16px; overflow: hidden; }
-    .brief-header { background: linear-gradient(135deg, #0a1628 0%, #0f1923 100%); border-bottom: 1px solid var(--brief-border); padding: 28px 32px; }
-    .brief-wordmark { font-size: 24px; font-weight: 900; color: #fff; letter-spacing: -0.5px; margin-bottom: 4px; }
+    .brief-wrap { background: var(--brief-bg); border: 1px solid var(--brief-border); border-radius: 16px; overflow: hidden; }
+    .brief-header { background: var(--brief-header); border-bottom: 1px solid var(--brief-border); padding: 28px 32px; }
+    .brief-wordmark { font-size: 24px; font-weight: 900; color: var(--text); letter-spacing: -0.5px; margin-bottom: 4px; }
     .brief-wordmark span { color: var(--accent); }
     .brief-subtitle { font-family: var(--mono); font-size: 10px; color: var(--accent); font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; }
     .brief-date-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    .brief-date { font-size: 20px; font-weight: 800; color: #fff; }
+    .brief-date { font-size: 20px; font-weight: 800; color: var(--text); }
     .brief-pills { display: flex; gap: 8px; flex-wrap: wrap; }
-    .brief-pill { background: #0a1628; border: 1px solid var(--brief-border); border-radius: 20px; padding: 4px 12px; font-size: 11px; color: var(--accent); font-family: var(--mono); font-weight: 700; }
+    .brief-pill { background: var(--accent-light); border: 1px solid var(--brief-border); border-radius: 20px; padding: 4px 12px; font-size: 11px; color: var(--accent); font-family: var(--mono); font-weight: 700; }
     .brief-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-    .brief-topic-chip { display: inline-block; background: #1e3a5f; color: var(--accent); border: 1px solid #2d5a8f; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-family: var(--mono); font-weight: 700; }
-    .brief-exec { background: #0a1628; border-left: 4px solid var(--accent); padding: 20px 24px; margin: 0 24px; border-radius: 8px; position: relative; top: -1px; }
+    .brief-topic-chip { display: inline-block; background: var(--accent-light); color: var(--accent); border: 1px solid #BFDBFE; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-family: var(--mono); font-weight: 700; }
+    .brief-exec { background: var(--surface); border-left: 4px solid var(--accent); padding: 20px 24px; margin: 0 24px; border-radius: 8px; position: relative; top: -1px; }
     .brief-exec-label { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent); letter-spacing: 2px; margin-bottom: 8px; }
     .brief-exec-text { color: var(--brief-text); font-size: 14px; line-height: 1.7; }
     .brief-body { padding: 24px 32px; }
@@ -164,20 +164,20 @@
     .article-card:hover { border-color: var(--accent); }
     .article-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
     .article-source { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
-    .article-title { color: #f1f5f9; font-size: 15px; font-weight: 700; line-height: 1.35; text-decoration: none; }
+    .article-title { color: var(--text); font-size: 15px; font-weight: 700; line-height: 1.35; text-decoration: none; }
     .article-title:hover { color: var(--accent); }
     .score-badge { font-family: var(--mono); font-size: 11px; font-weight: 800; padding: 5px 11px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
     .article-summary { color: var(--brief-dim); font-size: 13px; line-height: 1.65; margin: 8px 0; }
     .key-points { margin: 8px 0; padding: 0; list-style: none; }
-    .key-points li { color: #cbd5e1; font-size: 12px; line-height: 1.5; padding: 2px 0 2px 16px; position: relative; }
+    .key-points li { color: var(--text-mid); font-size: 12px; line-height: 1.5; padding: 2px 0 2px 16px; position: relative; }
     .key-points li::before { content: '—'; position: absolute; left: 0; color: var(--brief-border); }
-    .action-box { background: #0a1628; border-left: 3px solid var(--accent); border-radius: 4px; padding: 10px 14px; margin-top: 10px; }
+    .action-box { background: var(--surface); border-left: 3px solid var(--accent); border-radius: 4px; padding: 10px 14px; margin-top: 10px; }
     .action-label { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent); letter-spacing: 1px; margin-bottom: 3px; }
     .action-text { color: var(--brief-dim); font-size: 12px; line-height: 1.5; }
     .article-topics { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
     .brief-empty { text-align: center; padding: 60px 20px; color: var(--brief-dim); }
     .brief-empty-icon { font-size: 48px; margin-bottom: 16px; }
-    .brief-footer { text-align: center; padding: 20px; border-top: 1px solid var(--brief-border); font-family: var(--mono); font-size: 11px; color: #2d4a6f; }
+    .brief-footer { text-align: center; padding: 20px; border-top: 1px solid var(--brief-border); font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
     .brief-footer span { color: var(--accent); }
 
     /* ===== ARCHIVE ===== */
@@ -993,7 +993,7 @@ function renderArticleCard(a, compact = false) {
         <div class="article-source">${esc(a.source_name||'SOURCE')}</div>
         <a href="${esc(a.url||'#')}" target="_blank" class="article-title">${esc(a.headline||a.title||'Article')}</a>
       </div>
-      <div class="score-badge" style="background:${scoreColor};color:${score>=5?'#070d13':'#cbd5e1'};">▲ ${score}/10</div>
+      <div class="score-badge" style="background:${scoreColor};color:${score>=5?'#fff':'#475569'};">▲ ${score}/10</div>
     </div>
     <div class="article-summary">${esc(a.summary||'')}</div>`;
 
