@@ -302,6 +302,127 @@
       .brief-header { padding: 20px; }
       .brief-exec { margin: 0 16px; }
     }
+
+    /* ===== MOBILE — 768px ===== */
+    @media (max-width: 768px) {
+      /* GENERAL */
+      html { overflow-x: hidden; }
+      body { overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+      .page { padding: 12px 16px 80px; }
+
+      /* HEADER */
+      .header {
+        flex-wrap: wrap; gap: 8px;
+        padding-bottom: 12px; margin-bottom: 16px;
+      }
+      .h-div { display: none; }
+      .h-sub { display: none; }
+      .user-pill { display: none; }
+      .h-meta { order: 10; width: 100%; }
+      .h-title { font-size: 12px; display: flex; align-items: center; gap: 6px; }
+      .h-status { order: 2; margin-left: 0; }
+      .btn-signout { padding: 6px 10px; font-size: 11px; }
+      .wordmark .m, .wordmark .ai { font-size: 18px; }
+
+      /* TABS — hide desktop, show bottom nav */
+      .mode-tabs { display: none !important; }
+      .bottom-nav {
+        display: flex !important;
+        position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
+        background: #1E3348; border-top: 1px solid rgba(255,255,255,0.1);
+        height: 64px; align-items: stretch; justify-content: space-around;
+        padding: 0; margin: 0;
+      }
+      .bottom-nav-item {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        flex: 1; gap: 2px; background: none; border: none;
+        color: rgba(255,255,255,0.5); font-size: 10px; font-weight: 700;
+        font-family: var(--font); cursor: pointer; transition: color 0.2s;
+        padding: 0; min-height: 64px;
+      }
+      .bottom-nav-item .nav-icon { font-size: 20px; line-height: 1; }
+      .bottom-nav-item .nav-label { font-size: 10px; letter-spacing: 0.02em; }
+      .bottom-nav-item.active { color: #4A8FD6; }
+
+      /* KPI */
+      .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 10px; }
+      .kpi-card { padding: 14px; }
+      .kpi-value { font-size: 22px; }
+      .kpi-label { font-size: 10px; }
+
+      /* DATE NAV */
+      .btn-secondary { min-height: 44px; padding: 10px 14px; font-size: 12px; }
+      .btn-primary { min-height: 44px; }
+      .btn-login { min-height: 44px; }
+
+      /* BRIEF */
+      .brief-header { padding: 20px 16px; }
+      .brief-wordmark { font-size: 20px; }
+      .brief-date { font-size: 16px; }
+      .brief-pills { display: none; }
+      .brief-exec { margin: 0 12px; padding: 16px; }
+      .brief-exec-text { font-size: 13px; line-height: 1.6; }
+      .brief-body { padding: 16px; }
+      .article-card { padding: 14px; margin-bottom: 10px; }
+      .article-title { font-size: 14px; }
+      .article-summary { font-size: 12px; }
+      .score-badge { font-size: 10px; padding: 3px 8px; }
+      .action-box { padding: 8px 12px; }
+      .action-text { font-size: 11px; }
+      .brief-footer { font-size: 10px; padding: 14px; }
+      .brief-topics { gap: 4px; }
+      .brief-topic-chip { font-size: 10px; padding: 2px 8px; }
+
+      /* CARDS */
+      .card { border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+
+      /* CHAT */
+      .chat-layout { flex-direction: column; height: auto; min-height: auto; }
+      .chat-context { display: none; }
+      .chat-main { min-height: calc(100vh - 200px); border-radius: 12px; }
+      .chat-messages { min-height: 300px; max-height: calc(100vh - 340px); -webkit-overflow-scrolling: touch; }
+      #chat-input { font-size: 16px; padding: 10px 12px; }
+      #chat-send { width: 44px; height: 44px; min-width: 44px; }
+      .chat-suggestions { flex-direction: column; gap: 6px; }
+      .chat-suggestion { width: 100%; text-align: left; padding: 10px 14px; min-height: 44px; }
+      .msg-row { max-width: 90%; }
+      .msg-bubble { font-size: 13px; padding: 10px 14px; }
+
+      /* ARCHIVE */
+      .report-row { flex-wrap: wrap; gap: 8px; padding: 14px 16px; }
+      .report-date-badge { min-width: 50px; }
+      .report-meta-title { font-size: 12px; }
+      .report-open-btn { width: 100%; margin-top: 8px; padding: 10px; min-height: 44px; text-align: center; }
+
+      /* SOURCES */
+      #mode-sources > div { display: block !important; }
+      #mode-sources > div > .card { margin-bottom: 12px; }
+      .source-row { flex-wrap: wrap; gap: 8px; }
+      .source-toggle { min-height: 36px; padding: 6px 14px; }
+      #mode-sources .field input,
+      #mode-sources .field select { font-size: 16px; }
+      .row-2 { grid-template-columns: 1fr !important; }
+
+      /* ADMIN */
+      .run-trigger-card { flex-direction: column; padding: 20px 16px; align-items: stretch; }
+      .btn-run { width: 100%; margin-top: 12px; min-height: 44px; }
+      #queue-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .queue-table { font-size: 11px; min-width: 600px; }
+
+      /* FOOTER */
+      .footer { flex-direction: column; align-items: center; gap: 4px; text-align: center; padding-top: 16px; margin-top: 24px; }
+
+      /* TOAST above bottom nav */
+      #tf-toast { bottom: 80px; }
+
+      /* LOGIN */
+      .login-card { padding: 28px 24px; margin: 0 16px; }
+      .login-title { font-size: 20px; }
+      .login-field input { font-size: 16px; }
+    }
+
+    /* Hide bottom nav on desktop */
+    .bottom-nav { display: none; }
   </style>
 </head>
 <body>
@@ -567,6 +688,26 @@
   </div>
 
 </div><!-- /page -->
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bottom-nav-item active" data-tab="today" onclick="setTab('today')">
+    <span class="nav-icon">📡</span><span class="nav-label">Today</span>
+  </button>
+  <button class="bottom-nav-item" data-tab="archive" onclick="setTab('archive')">
+    <span class="nav-icon">📚</span><span class="nav-label">Archive</span>
+  </button>
+  <button class="bottom-nav-item" data-tab="chat" onclick="setTab('chat')">
+    <span class="nav-icon">💬</span><span class="nav-label">Chat</span>
+  </button>
+  <button class="bottom-nav-item" data-tab="sources" onclick="setTab('sources')">
+    <span class="nav-icon">🌐</span><span class="nav-label">Sources</span>
+  </button>
+  <button class="bottom-nav-item" data-tab="admin" onclick="setTab('admin')" id="bottom-tab-admin">
+    <span class="nav-icon">⚙️</span><span class="nav-label">Admin</span>
+  </button>
+</nav>
+
 </div><!-- /app-wrapper -->
 
 <div id="tf-toast"></div>
@@ -632,6 +773,8 @@ function bootApp() {
   // Admin tab only visible to admins
   if (currentUser.role !== 'admin') {
     document.getElementById('tab-admin').style.display = 'none';
+    const bottomAdmin = document.getElementById('bottom-tab-admin');
+    if (bottomAdmin) bottomAdmin.style.display = 'none';
   }
   loadToday();
 }
@@ -677,6 +820,15 @@ function setTab(tab) {
   if (tab === 'sources') loadSources();
   if (tab === 'admin')   loadAdminData();
   if (tab === 'chat')    initChat();
+  syncBottomNav(tab);
+}
+
+function syncBottomNav(tab) {
+  const nav = document.getElementById('bottom-nav');
+  if (!nav) return;
+  nav.querySelectorAll('.bottom-nav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
+  });
 }
 
 // ============================================================
