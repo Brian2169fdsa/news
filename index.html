@@ -468,6 +468,8 @@
     .today-article-save-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
     .myai-note-box { margin-top: 8px; width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 7px; font-size: 12px; font-family: var(--font); resize: none; outline: none; background: var(--surface); color: var(--text); min-height: 56px; }
     .myai-note-box:focus { border-color: var(--accent); background: var(--bg); }
+    .myai-video-card-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin-bottom: 8px; }
+    .myai-video-card-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px; }
     @media(max-width:768px) {
       #myai-columns { grid-template-columns: 1fr !important; }
       #myai-today-articles { grid-template-columns: 1fr !important; }
@@ -699,6 +701,36 @@
       </div>
     </div>
 
+    <!-- QUICK SAVE BAR -->
+    <div style="display:flex;gap:8px;margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;align-items:center;">
+      <span style="font-size:18px;flex-shrink:0;">⚡</span>
+      <input type="url" id="quick-save-url" placeholder="Paste any URL — YouTube, TikTok, article, tweet — press Enter to save" style="flex:1;border:none;background:transparent;font-size:13px;font-family:var(--font);outline:none;color:var(--text);" onkeydown="if(event.key==='Enter')quickSaveUrl()" onpaste="setTimeout(()=>quickSaveUrl(),100)" />
+      <button onclick="quickSaveUrl()" style="padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;">Save</button>
+    </div>
+
+    <!-- PHONE TIP -->
+    <div style="margin-bottom:16px;">
+      <button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="font-size:11px;font-weight:700;color:var(--text-dim);background:none;border:none;cursor:pointer;padding:0;font-family:var(--font);letter-spacing:0.04em;">
+        📱 Save from your phone → tap to see how
+      </button>
+      <div style="display:none;margin-top:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
+        <div style="font-size:12px;color:var(--text-mid);line-height:1.8;">
+          <strong>iPhone — any app:</strong><br>
+          Share → Copy Link → open this dashboard → paste in the save bar above<br><br>
+          <strong>iPhone — Safari shortcut (fastest):</strong><br>
+          1. Open Shortcuts app → New Shortcut<br>
+          2. Add action: "Get URLs from input"<br>
+          3. Add action: "Copy to clipboard"<br>
+          4. Name it "Save to My AI"<br>
+          5. Enable in Share Sheet<br>
+          Now: Share any page → Save to My AI → open dashboard → paste<br><br>
+          <strong>TikTok:</strong> Tap Share → Copy Link → paste above<br>
+          <strong>YouTube:</strong> Tap Share → Copy Link → paste above<br>
+          <strong>Auto-detects YouTube and embeds the video directly in the card</strong>
+        </div>
+      </div>
+    </div>
+
     <!-- AREA FILTER TABS -->
     <div id="myai-area-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);overflow-x:auto;">
       <button class="myai-area-tab active" data-area="all" onclick="filterByArea('all',this)">🌐 All</button>
@@ -740,6 +772,8 @@
         <button class="myai-type-btn" data-type="note" onclick="selectCardType(this)">📝 Note</button>
         <button class="myai-type-btn" data-type="todo" onclick="selectCardType(this)">✅ Todo</button>
         <button class="myai-type-btn" data-type="resource" onclick="selectCardType(this)">🔗 Resource</button>
+        <button class="myai-type-btn" data-type="video" onclick="selectCardType(this)">🎬 Video</button>
+        <button class="myai-type-btn" data-type="learn" onclick="selectCardType(this)">🎓 Learn</button>
       </div>
       <div class="field">
         <label>Title *</label>
@@ -760,7 +794,7 @@
           <label>Status</label>
           <select id="card-status">
             <option value="inbox">📥 Inbox</option>
-            <option value="reading">👁 Reading</option>
+            <option value="learning">🎓 Learning</option>
             <option value="saved">⭐ Saved</option>
             <option value="doing">🔥 Doing</option>
             <option value="done">✅ Done</option>
@@ -1501,11 +1535,11 @@ function renderBoard(cards) {
   const container = document.getElementById('myai-columns');
   if (!container) return;
   const statuses = [
-    { key:'inbox',   label:'📥 Inbox',   color:'var(--text-dim)' },
-    { key:'reading', label:'👁 Reading',  color:'var(--accent)' },
-    { key:'saved',   label:'⭐ Saved',    color:'var(--amber)' },
-    { key:'doing',   label:'🔥 Doing',    color:'var(--red)' },
-    { key:'done',    label:'✅ Done',     color:'var(--green)' }
+    { key:'inbox',    label:'📥 Inbox',    color:'var(--text-dim)' },
+    { key:'learning', label:'🎓 Learning', color:'#7C3AED' },
+    { key:'saved',    label:'⭐ Saved',    color:'var(--amber)' },
+    { key:'doing',    label:'🔥 Doing',    color:'var(--red)' },
+    { key:'done',     label:'✅ Done',     color:'var(--green)' }
   ];
   container.innerHTML = statuses.map(s => {
     const cols = cards.filter(c => c.status === s.key);
@@ -1536,7 +1570,7 @@ function renderList(cards) {
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0;">
         <select onchange="updateCardStatus('${c.id}',this.value)" onclick="event.stopPropagation()" style="font-size:11px;font-family:var(--font);border:1px solid var(--border);border-radius:6px;padding:3px 6px;background:var(--bg);cursor:pointer;outline:none;">
-          ${['inbox','reading','saved','doing','done'].map(s =>
+          ${['inbox','learning','saved','doing','done'].map(s =>
             `<option value="${s}" ${c.status===s?'selected':''}>${s}</option>`
           ).join('')}
         </select>
@@ -1547,13 +1581,29 @@ function renderList(cards) {
 
 function renderCard(c) {
   const area = myAIAreas.find(a => a.id === c.area_id);
+  const youtubeEmbed = (c.type === 'video' && c.url) ? getYouTubeEmbed(c.url) : null;
+  const isTikTok = c.url && c.url.includes('tiktok.com');
+
   return `<div class="myai-card" style="border-left-color:${area?.color||'var(--accent)'};" onclick="openCardDetail('${c.id}')">
     <div class="myai-card-type">${getTypeIcon(c.type)} ${c.type}</div>
+    ${youtubeEmbed ? `
+      <div class="myai-video-card-embed" onclick="event.stopPropagation()">
+        <iframe src="${youtubeEmbed}" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>` : ''}
+    ${isTikTok ? `
+      <div style="background:#010101;border-radius:8px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+        <div style="font-size:24px;">🎵</div>
+        <div style="flex:1;">
+          <div style="font-size:10px;font-weight:700;color:#69C9D0;font-family:var(--mono);margin-bottom:2px;">TIKTOK</div>
+          <a href="${esc(c.url)}" target="_blank" onclick="event.stopPropagation()" style="font-size:11px;color:#fff;text-decoration:none;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Watch on TikTok ↗</a>
+        </div>
+      </div>` : ''}
     <div class="myai-card-title">${esc(c.title)}</div>
     ${c.body ? `<div class="myai-card-body">${esc(c.body)}</div>` : ''}
     ${area ? `<div class="myai-card-area-chip">${area.icon} ${area.name}</div>` : ''}
     <div class="myai-card-actions">
       <button class="myai-card-action-btn" onclick="event.stopPropagation();cycleCardStatus('${c.id}')">→ Move</button>
+      ${c.url && !youtubeEmbed ? `<a href="${esc(c.url)}" target="_blank" onclick="event.stopPropagation()" class="myai-card-action-btn" style="text-decoration:none;">↗ Open</a>` : ''}
       <button class="myai-card-action-btn" onclick="event.stopPropagation();deleteCard('${c.id}')">🗑</button>
     </div>
   </div>`;
@@ -1613,12 +1663,29 @@ async function saveArticleToMyAI(articleId, title, body, url, sourceName) {
   }
 }
 
-function openNewCardModal(defaultStatus) {
+function openNewCardModal(defaultStatus, prefillUrl) {
   newCardArticleData = null;
   document.getElementById('card-title').value = '';
   document.getElementById('card-body').value = '';
-  document.getElementById('card-url').value = '';
+  document.getElementById('card-url').value = prefillUrl || '';
   document.getElementById('card-status').value = defaultStatus || 'inbox';
+
+  if (prefillUrl) {
+    if (prefillUrl.includes('youtube.com') || prefillUrl.includes('youtu.be')) {
+      selectCardType(document.querySelector('[data-type="video"]'));
+      const videoId = extractYouTubeId(prefillUrl);
+      if (videoId) {
+        document.getElementById('card-title').value = 'YouTube Video';
+        fetchYouTubeTitle(videoId);
+      }
+    } else if (prefillUrl.includes('tiktok.com')) {
+      selectCardType(document.querySelector('[data-type="video"]'));
+      document.getElementById('card-title').value = 'TikTok Video';
+    } else {
+      selectCardType(document.querySelector('[data-type="learn"]'));
+    }
+  }
+
   document.getElementById('myai-modal').style.display = 'flex';
 }
 
@@ -1662,7 +1729,7 @@ async function updateCardStatus(id, status) {
 async function cycleCardStatus(id) {
   const card = myAICards.find(c => c.id === id);
   if (!card) return;
-  const order = ['inbox','reading','saved','doing','done'];
+  const order = ['inbox','learning','saved','doing','done'];
   const next = order[(order.indexOf(card.status)+1) % order.length];
   await updateCardStatus(id, next);
 }
@@ -1695,7 +1762,7 @@ function openCardDetail(id) {
           <div style="display:flex;gap:8px;margin-top:8px;">
             <button onclick="saveCardNote('${card.id}')" class="btn-primary" style="font-size:12px;padding:8px 16px;">Save Note</button>
             <select onchange="updateCardStatus('${card.id}',this.value)" style="font-size:12px;font-family:var(--font);border:1px solid var(--border);border-radius:8px;padding:8px 12px;background:var(--bg);outline:none;">
-              ${['inbox','reading','saved','doing','done'].map(s =>
+              ${['inbox','learning','saved','doing','done'].map(s =>
                 `<option value="${s}" ${card.status===s?'selected':''}>${s}</option>`
               ).join('')}
             </select>
@@ -1721,13 +1788,55 @@ async function saveCardNote(cardId) {
 }
 
 function getTypeIcon(type) {
-  const icons = { article:'📰', idea:'💡', note:'📝', todo:'✅', resource:'🔗' };
+  const icons = { article:'📰', idea:'💡', note:'📝', todo:'✅', resource:'🔗', video:'🎬', learn:'🎓' };
   return icons[type] || '📌';
 }
 
 function getAreaName(areaId) {
   const area = myAIAreas.find(a => a.id === areaId);
   return area ? `${area.icon} ${area.name}` : 'No area';
+}
+
+function extractYouTubeId(url) {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+    /youtube\.com\/shorts\/([^&\n?#]+)/
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+async function fetchYouTubeTitle(videoId) {
+  try {
+    const resp = await fetch(
+      `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`
+    );
+    const data = await resp.json();
+    if (data.title) {
+      document.getElementById('card-title').value = data.title;
+    }
+  } catch(e) {}
+}
+
+function getYouTubeEmbed(url) {
+  const id = extractYouTubeId(url);
+  if (!id) return null;
+  return `https://www.youtube.com/embed/${id}`;
+}
+
+function getTikTokUrl(url) {
+  return url.includes('tiktok.com') ? url : null;
+}
+
+function quickSaveUrl() {
+  const input = document.getElementById('quick-save-url');
+  const url = input.value.trim();
+  if (!url || !url.startsWith('http')) return;
+  input.value = '';
+  openNewCardModal('learning', url);
 }
 
 // ============================================================
