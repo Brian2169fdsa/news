@@ -575,12 +575,12 @@
 // ============================================================
 // CONFIG — UPDATE THESE BEFORE DEPLOYING
 // ============================================================
-const TF_SB_URL  = 'https://YOUR_SUPABASE_URL.supabase.co';  // ← your Tiny Fish Supabase URL
-const TF_SB_KEY  = 'YOUR_ANON_KEY';                           // ← your anon key
+const TF_SB_URL  = 'https://khmgjplzficpcelacuyq.supabase.co';
+const TF_SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtobWdqcGx6ZmljcGNlbGFjdXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTExODAsImV4cCI6MjA4OTY4NzE4MH0.MGi1zRbkLcTcqnoDyBGWMYu0sB9w6glPe8CE11_cP0M';
 
 // n8n webhooks (set these after importing workflows)
-const TF_N8N_TRIGGER  = 'https://YOUR_N8N.app.n8n.cloud/webhook/tf-manual-trigger';
-const TF_N8N_CHAT     = 'https://YOUR_N8N.app.n8n.cloud/webhook/tf-chat';
+const TF_N8N_TRIGGER  = 'https://placeholder.n8n.cloud/webhook/tf-manual-trigger';
+const TF_N8N_CHAT     = 'https://placeholder.n8n.cloud/webhook/tf-chat';
 
 // ============================================================
 // AUTH
@@ -599,6 +599,7 @@ async function doLogin() {
       method: 'POST',
       headers: {
         'apikey': TF_SB_KEY,
+        'Authorization': `Bearer ${TF_SB_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ user_email: email, user_password: pw })
