@@ -222,6 +222,24 @@
     #chat-input:focus { border-color: var(--accent); }
     #chat-send { width: 44px; height: 44px; border-radius: 50%; background: var(--nav); color: #fff; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     #chat-send:hover { background: var(--accent); }
+
+    /* ===== CHAT MODE TOGGLE ===== */
+    .chat-mode-toggle { display: flex; gap: 3px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 3px; margin: 0 20px 12px; }
+    .chat-mode-btn { flex: 1; padding: 8px 12px; border: none; border-radius: 5px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: var(--font); color: var(--text-dim); background: transparent; transition: all 0.2s; letter-spacing: 0.02em; }
+    .chat-mode-btn.active { background: var(--nav); color: #fff; }
+    .chat-mode-btn.research.active { background: linear-gradient(135deg, #1a5fb4, var(--accent)); color: #fff; }
+    .chat-mode-btn:hover:not(.active) { background: var(--surface2); color: var(--text); }
+    .research-indicator { display: none; align-items: center; gap: 8px; padding: 10px 20px; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-light); border-top: 1px solid #BFDBFE; }
+    .research-indicator.show { display: flex; }
+    .research-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulseDot 1s infinite; flex-shrink: 0; }
+    .sources-box { margin-top: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
+    .sources-box-label { font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; font-family: var(--mono); }
+    .source-link { display: block; font-size: 11px; color: var(--accent); text-decoration: none; padding: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .source-link:hover { text-decoration: underline; }
+    .research-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--accent-light); color: var(--accent); border: 1px solid #BFDBFE; border-radius: 20px; padding: 2px 8px; font-size: 10px; font-weight: 700; font-family: var(--mono); margin-bottom: 6px; }
+    .msg-bubble.assistant .formatted-answer h2, .msg-bubble.assistant .formatted-answer h3 { font-size: 13px; font-weight: 700; color: var(--text); margin: 12px 0 4px; }
+    .msg-bubble.assistant .formatted-answer p { margin: 4px 0; line-height: 1.6; }
+    .msg-bubble.assistant .formatted-answer strong { color: var(--text); font-weight: 700; }
     .context-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
     .context-title { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
     .context-article { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-mid); line-height: 1.4; }
@@ -560,16 +578,24 @@
             <div class="chat-header-sub" id="chat-context-label">Connected to today's brief · Ask me anything</div>
           </div>
         </div>
+        <div class="chat-mode-toggle">
+          <button class="chat-mode-btn active" id="btn-mode-brief" onclick="setChatMode('brief')">💬 Brief Context</button>
+          <button class="chat-mode-btn research" id="btn-mode-research" onclick="setChatMode('research')">🔍 Deep Research</button>
+        </div>
         <div class="chat-messages" id="chat-messages"></div>
         <div class="typing-dots" id="typing-indicator">
           <div class="typing-inner"><span></span><span></span><span></span></div>
         </div>
+        <div class="research-indicator" id="research-indicator">
+          <div class="research-dot"></div>
+          <span id="research-status-text">Researching live web sources...</span>
+        </div>
         <div class="chat-suggestions" id="chat-suggestions">
-          <button class="chat-suggestion" onclick="useSuggestion(this)">What are the biggest AI stories today?</button>
-          <button class="chat-suggestion" onclick="useSuggestion(this)">How can ManageAI use these for clients?</button>
-          <button class="chat-suggestion" onclick="useSuggestion(this)">Summarize the top picks</button>
-          <button class="chat-suggestion" onclick="useSuggestion(this)">Any voice AI news today?</button>
-          <button class="chat-suggestion" onclick="useSuggestion(this)">What agent frameworks are trending?</button>
+          <button class="chat-suggestion" onclick="useSuggestion(this,'brief')">What are the biggest stories today?</button>
+          <button class="chat-suggestion" onclick="useSuggestion(this,'brief')">How can ManageAI use these for clients?</button>
+          <button class="chat-suggestion" onclick="useSuggestion(this,'research')">🔍 Research: What is the current state of AI agents in 2026?</button>
+          <button class="chat-suggestion" onclick="useSuggestion(this,'research')">🔍 Research: Best open source LLMs available right now</button>
+          <button class="chat-suggestion" onclick="useSuggestion(this,'research')">🔍 Research: Latest n8n AI agent integrations</button>
         </div>
         <div class="chat-input-area">
           <textarea id="chat-input" placeholder="Ask about today's AI news..." rows="1"></textarea>
@@ -722,6 +748,8 @@ const TF_SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 // n8n webhooks (set these after importing workflows)
 const TF_N8N_TRIGGER  = 'https://placeholder.n8n.cloud/webhook/tf-manual-trigger';
 const TF_N8N_CHAT     = 'https://placeholder.n8n.cloud/webhook/tf-chat';
+const TF_SB_CHAT_TABLE = 'tf_chat_queries';
+let chatSessionId = 'sess-' + Date.now() + '-' + Math.random().toString(36).substr(2,9);
 
 // ============================================================
 // AUTH
@@ -732,6 +760,7 @@ let todayArticles = [];
 let todayReport = null;
 let chatHistory = [];
 let chatContextString = '';
+let chatMode = 'brief';
 
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
@@ -1102,8 +1131,22 @@ function clearChat() {
   initChat();
 }
 
-function useSuggestion(el) {
-  document.getElementById('chat-input').value = el.textContent;
+function setChatMode(mode) {
+  chatMode = mode;
+  document.getElementById('btn-mode-brief').classList.toggle('active', mode === 'brief');
+  document.getElementById('btn-mode-research').classList.toggle('active', mode === 'research');
+  const input = document.getElementById('chat-input');
+  if (mode === 'research') {
+    input.placeholder = 'Ask anything — I will research it live...';
+  } else {
+    input.placeholder = 'Ask about today\'s AI news...';
+  }
+}
+
+function useSuggestion(el, mode) {
+  const text = el.textContent.replace('🔍 Research: ', '').trim();
+  if (mode) setChatMode(mode);
+  document.getElementById('chat-input').value = text;
   document.getElementById('chat-suggestions').style.display = 'none';
   sendChatMessage();
 }
@@ -1115,66 +1158,125 @@ async function sendChatMessage() {
   input.value = '';
   input.style.height = '44px';
   document.getElementById('chat-suggestions').style.display = 'none';
-
-  appendChatMessage('user', msg);
-  showTyping();
+  appendChatMessage('user', escHtml(msg));
   chatHistory.push({ role: 'user', content: msg });
-
-  try {
-    const systemPrompt = `You are AI News Concierge, ManageAI's internal AI research intelligence system. You help the ManageAI team (an AI automation agency) stay current on AI news and assess its relevance to their clients.
-
-ManageAI builds n8n, Make.com, and Claude AI agent systems for SMB clients in behavioral health, construction, and medical transport.
-
-CURRENT BRIEF CONTEXT:
-${chatContextString || 'No articles loaded yet. Tell the user to open the Today tab first.'}
-
-Answer questions about the articles above. Be direct and insightful. When discussing actionability, focus on how ManageAI could use new AI tools/models for their specific client verticals. Keep responses concise but informative.`;
-
-    const messages = chatHistory.slice(-10).map(m => ({ role: m.role, content: m.content }));
-
-    // Try n8n proxy first, fall back to direct Anthropic call (if API key available client-side)
-    let reply = '';
-    try {
-      const resp = await fetch(TF_N8N_CHAT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages,
-          context: systemPrompt,
-          user: currentUser?.name || 'ManageAI Team'
-        })
-      });
-      const data = await resp.json();
-      reply = data.reply || data.response || data.message || '';
-    } catch(e) {
-      reply = 'Chat webhook not configured yet. Set TF_N8N_CHAT in the config section of this file and create an n8n webhook that proxies to Claude API.';
-    }
-
-    hideTyping();
-    if (reply) {
-      appendChatMessage('assistant', reply);
-      chatHistory.push({ role: 'assistant', content: reply });
-    }
-  } catch(e) {
-    hideTyping();
-    appendChatMessage('assistant', 'Connection error. Please try again.');
+  if (chatMode === 'research') {
+    await sendResearchMessage(msg);
+  } else {
+    await sendBriefMessage(msg);
   }
 }
 
-function appendChatMessage(role, text) {
+async function sendBriefMessage(msg) {
+  showTyping();
+  const systemPrompt = `You are the AI News Concierge for ManageAI, an AI automation agency building n8n, Make.com, and Claude agent systems for clients in behavioral health, construction, and medical transport. Answer questions about today's AI news. Be direct and insightful. Use **bold** for key points. Always tie answers back to ManageAI's work.\n\nTODAY'S BRIEF:\n${chatContextString || 'No brief loaded yet.'}`;
+  const messages = chatHistory.slice(-10);
+  try {
+    const resp = await fetch(TF_N8N_CHAT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: msg,
+        mode: 'brief',
+        context: chatContextString,
+        context_date: currentViewDate,
+        user_email: currentUser?.email || 'anonymous',
+        session_id: chatSessionId,
+        messages
+      })
+    });
+    const data = await resp.json();
+    hideTyping();
+    const reply = data.reply || 'No response received.';
+    appendChatMessage('assistant', formatChatReply(reply), null, 'brief');
+    chatHistory.push({ role: 'assistant', content: reply });
+  } catch(e) {
+    hideTyping();
+    appendChatMessage('assistant', 'Chat not connected yet — set TF_N8N_CHAT webhook URL in config.');
+  }
+}
+
+async function sendResearchMessage(msg) {
+  const researchIndicator = document.getElementById('research-indicator');
+  const statusText = document.getElementById('research-status-text');
+  researchIndicator.classList.add('show');
+  const stages = [
+    'Generating search queries...',
+    'Searching the web...',
+    'Reading articles...',
+    'Synthesizing with Claude...'
+  ];
+  let stageIdx = 0;
+  const stageTimer = setInterval(() => {
+    stageIdx = (stageIdx + 1) % stages.length;
+    statusText.textContent = stages[stageIdx];
+  }, 3000);
+  try {
+    const resp = await fetch(TF_N8N_CHAT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: msg,
+        mode: 'research',
+        context: chatContextString,
+        context_date: currentViewDate,
+        user_email: currentUser?.email || 'anonymous',
+        session_id: chatSessionId
+      })
+    });
+    const data = await resp.json();
+    clearInterval(stageTimer);
+    researchIndicator.classList.remove('show');
+    const reply = data.reply || 'No response received.';
+    const sources = data.sources || [];
+    const articlesRead = data.articles_read || 0;
+    appendChatMessage('assistant', formatChatReply(reply), sources, 'research', articlesRead);
+    chatHistory.push({ role: 'assistant', content: reply });
+  } catch(e) {
+    clearInterval(stageTimer);
+    researchIndicator.classList.remove('show');
+    appendChatMessage('assistant', 'Research agent not connected yet — import AI-08 workflow and set TF_N8N_CHAT webhook URL.');
+  }
+}
+
+function formatChatReply(text) {
+  return '<div class="formatted-answer">' +
+    text
+      .replace(/## (.*?)(\n|$)/g, '<h2>$1</h2>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>') +
+    '</div>';
+}
+
+function appendChatMessage(role, html, sources, mode, articlesRead) {
   const msgs = document.getElementById('chat-messages');
   const now = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
   const div = document.createElement('div');
   div.style.animation = 'slideIn 0.25s ease';
   if (role === 'user') {
     div.className = 'msg-row user';
-    div.innerHTML = `<div class="msg-bubble user">${escHtml(text)}</div>`;
+    div.innerHTML = `<div class="msg-bubble user">${html}</div>`;
   } else {
+    let sourcesHtml = '';
+    if (sources && sources.length) {
+      sourcesHtml = `<div class="sources-box">
+        <div class="sources-box-label">📎 Sources read (${articlesRead || sources.length} articles)</div>
+        ${sources.slice(0,5).map(s => `<a href="${esc(s.url||'#')}" target="_blank" class="source-link">${esc(s.title||s.url||'Source')}</a>`).join('')}
+      </div>`;
+    }
+    const badge = mode === 'research'
+      ? `<div class="research-badge">🔍 Live Research</div>`
+      : `<div class="research-badge" style="background:var(--green-light);color:var(--green);border-color:#BBF7D0;">💬 Brief Context</div>`;
     div.className = 'msg-row';
     div.innerHTML = `
-      <div>
+      <div style="width:100%;">
         <div class="msg-meta">AI News Concierge &nbsp;·&nbsp; ${now}</div>
-        <div class="msg-bubble assistant">${text.replace(/\n/g,'<br>')}</div>
+        ${badge}
+        <div class="msg-bubble assistant">${html}</div>
+        ${sourcesHtml}
       </div>`;
   }
   msgs.appendChild(div);
