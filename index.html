@@ -727,6 +727,11 @@ const TF_N8N_CHAT     = 'https://placeholder.n8n.cloud/webhook/tf-chat';
 // AUTH
 // ============================================================
 let currentUser = null;
+let currentViewDate = new Date().toISOString().split('T')[0];
+let todayArticles = [];
+let todayReport = null;
+let chatHistory = [];
+let chatContextString = '';
 
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
@@ -834,7 +839,7 @@ function syncBottomNav(tab) {
 // ============================================================
 // DATE NAVIGATION
 // ============================================================
-let currentViewDate = new Date().toISOString().split('T')[0]; // yyyy-MM-dd
+currentViewDate = new Date().toISOString().split('T')[0]; // yyyy-MM-dd
 
 function shiftDate(dir) {
   const d = new Date(currentViewDate);
@@ -862,8 +867,8 @@ function loadToday() {
 // ============================================================
 // TODAY'S BRIEF
 // ============================================================
-let todayArticles = [];
-let todayReport   = null;
+todayArticles = [];
+todayReport   = null;
 
 async function loadBriefForDate(date) {
   document.getElementById('brief-container').innerHTML =
@@ -1056,8 +1061,8 @@ function viewArchiveReport(date) {
 // ============================================================
 // CHAT
 // ============================================================
-let chatHistory = [];
-let chatContextString = '';
+chatHistory = [];
+chatContextString = '';
 
 function updateChatContext() {
   if (!todayArticles.length) {
