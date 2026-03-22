@@ -473,6 +473,9 @@
     @media(max-width:768px) {
       #myai-columns { grid-template-columns: 1fr !important; }
       #myai-today-articles { grid-template-columns: 1fr !important; }
+      #mode-ethan .chat-context { display: none; }
+      #mode-ethan > div { grid-template-columns: 1fr !important; }
+      #ethan-input { font-size: 16px; }
     }
   </style>
 </head>
@@ -534,6 +537,8 @@
     <button class="mode-tab" onclick="setTab('archive')" id="tab-archive">📚 Archive</button>
     <button class="mode-tab" onclick="setTab('research')" id="tab-research">🔬 Research</button>
     <button class="mode-tab" onclick="setTab('clients')" id="tab-clients">🏗️ Clients</button>
+    <button class="mode-tab" onclick="setTab('team')" id="tab-team">👥 Team</button>
+    <button class="mode-tab" onclick="setTab('ethan')" id="tab-ethan">🧠 Ethan</button>
     <button class="mode-tab" onclick="setTab('chat')" id="tab-chat">💬 AI Chat</button>
     <button class="mode-tab" onclick="setTab('sources')" id="tab-sources">🌐 Sources</button>
     <button class="mode-tab" onclick="setTab('myai')" id="tab-myai">✨ My AI</button>
@@ -710,6 +715,133 @@
     <div id="client-detail" style="display:none;">
       <button onclick="closeClientDetail()" style="background:none;border:none;cursor:pointer;color:var(--accent);font-size:13px;font-weight:700;font-family:var(--font);padding:0;margin-bottom:20px;display:block;">← Back to Clients</button>
       <div id="client-detail-content"></div>
+    </div>
+  </div>
+
+  <!-- ==================== TEAM ==================== -->
+  <div id="mode-team" class="mode-content hidden">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+      <div>
+        <div style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px;">👥 Team</div>
+        <div style="font-size:13px;color:var(--text-mid);">Shared intelligence — what the team is saving, discussing, and learning</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <select id="team-filter-type" onchange="filterTeamFeed()" style="padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--font);outline:none;background:#fff;color:var(--text);font-weight:600;">
+          <option value="">All Types</option>
+          <option value="article">Articles</option>
+          <option value="note">Notes</option>
+          <option value="video">Videos</option>
+          <option value="link">Links</option>
+        </select>
+        <button onclick="loadTeam()" class="btn-secondary" style="font-size:12px;">↻ Refresh</button>
+      </div>
+    </div>
+    <!-- 2-column layout -->
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;">
+      <!-- LEFT: Team Feed -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:14px;">📡 Team Feed</div>
+        <div id="team-feed-list">
+          <div class="dash-loading"><div class="loading-ring"></div> Loading team feed...</div>
+        </div>
+      </div>
+      <!-- RIGHT: Members + Activity -->
+      <div>
+        <!-- Team Members -->
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px;">
+          <div style="padding:14px 18px;border-bottom:1px solid var(--border);">
+            <div style="font-size:12px;font-weight:700;color:var(--text);">👤 Team Members</div>
+          </div>
+          <div id="team-members-list" style="padding:8px 0;">
+            <div class="dash-loading" style="padding:12px 18px;"><div class="loading-ring"></div></div>
+          </div>
+        </div>
+        <!-- Ethan card -->
+        <div style="background:linear-gradient(135deg,#0a1628,#1e3348);border-radius:14px;padding:20px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#4A8FD6,#22c55e);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🧠</div>
+            <div>
+              <div style="font-size:14px;font-weight:800;color:#fff;">Ethan</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.5);font-family:'JetBrains Mono',monospace;letter-spacing:1px;">AI TEAM MEMBER · ALWAYS ON</div>
+            </div>
+            <div style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulseDot 2s infinite;"></div>
+          </div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:14px;">Ethan has read every article, watched every discussion, and remembers everything the team has saved. Ask him anything — he'll connect dots you didn't know existed.</div>
+          <button onclick="setTab('chat');setTimeout(()=>{setChatMode('brief');document.getElementById('chat-input').value='@Ethan ';document.getElementById('chat-input').focus();},100)" style="width:100%;padding:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(74,143,214,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+            💬 Message Ethan
+          </button>
+        </div>
+        <!-- Top Saves this week -->
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div style="padding:14px 18px;border-bottom:1px solid var(--border);">
+            <div style="font-size:12px;font-weight:700;color:var(--text);">🔥 Top Saves This Week</div>
+          </div>
+          <div id="team-top-saves" style="padding:8px 0;">
+            <div class="dash-loading" style="padding:12px 18px;"><div class="loading-ring"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ETHAN ==================== -->
+  <div id="mode-ethan" class="mode-content hidden">
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:20px;height:calc(100vh - 280px);min-height:500px;">
+      <!-- LEFT: Ethan profile + memory -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <!-- Profile card -->
+        <div style="background:linear-gradient(160deg,#0a1628,#1e3a5f);border-radius:16px;padding:24px;text-align:center;">
+          <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#4A8FD6,#22c55e);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 14px;">🧠</div>
+          <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:4px;">Ethan</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:14px;">AI TEAM MEMBER</div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:700;color:#22c55e;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulseDot 2s infinite;"></div>
+            Online · Always
+          </div>
+          <div style="margin-top:14px;font-size:11px;color:rgba(255,255,255,0.5);line-height:1.6;">Read every article. Remembers every decision. Connects every dot.</div>
+        </div>
+        <!-- What Ethan knows -->
+        <div class="card" style="flex:1;overflow-y:auto;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px;">🗂 What Ethan Knows</div>
+          <div id="ethan-memory-list">
+            <div class="dash-loading"><div class="loading-ring"></div></div>
+          </div>
+        </div>
+        <!-- Quick prompts -->
+        <div class="card">
+          <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;">⚡ Quick Ask</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <button onclick="sendEthanMessage('What has the team been learning about this week?')" class="chat-suggestion" style="text-align:left;width:100%;">What has the team been learning?</button>
+            <button onclick="sendEthanMessage('What AI news should ManageAI act on today?')" class="chat-suggestion" style="text-align:left;width:100%;">What should we act on today?</button>
+            <button onclick="sendEthanMessage('What are the most discussed topics across all client projects?')" class="chat-suggestion" style="text-align:left;width:100%;">Top topics across all clients?</button>
+            <button onclick="sendEthanMessage('Summarize what each team member has saved this week')" class="chat-suggestion" style="text-align:left;width:100%;">Team saves this week</button>
+            <button onclick="sendEthanMessage('What AI tools or techniques should ManageAI explore right now based on everything you know?')" class="chat-suggestion" style="text-align:left;width:100%;">What should we explore next?</button>
+          </div>
+        </div>
+      </div>
+      <!-- RIGHT: Chat with Ethan -->
+      <div style="display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#0a1628,#1e3348);display:flex;align-items:center;gap:12px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4A8FD6,#22c55e);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🧠</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#fff;">Ethan</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);">AI Team Member · Has full context on your team and clients</div>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:#22c55e;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulseDot 2s infinite;"></div>
+            Online
+          </div>
+        </div>
+        <div id="ethan-messages" style="flex:1;overflow-y:auto;padding:20px;scroll-behavior:smooth;"></div>
+        <div class="typing-dots" id="ethan-typing" style="padding:0 20px 8px;">
+          <div class="typing-inner"><span></span><span></span><span></span></div>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:10px;padding:14px 20px;border-top:1px solid var(--border);background:var(--surface);">
+          <textarea id="ethan-input" placeholder="Ask Ethan anything about your team, clients, or AI news..." rows="1" style="flex:1;border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:13px;resize:none;height:44px;max-height:100px;font-family:var(--font);outline:none;background:#fff;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendEthanMessage()}"></textarea>
+          <button onclick="sendEthanMessage()" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0a1628,#4A8FD6);color:#fff;border:none;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;">&#9654;</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1016,6 +1148,12 @@
   <button class="bottom-nav-item" data-tab="clients" onclick="setTab('clients')">
     <span class="nav-icon">🏗️</span><span class="nav-label">Clients</span>
   </button>
+  <button class="bottom-nav-item" data-tab="team" onclick="setTab('team')">
+    <span class="nav-icon">👥</span><span class="nav-label">Team</span>
+  </button>
+  <button class="bottom-nav-item" data-tab="ethan" onclick="setTab('ethan')">
+    <span class="nav-icon">🧠</span><span class="nav-label">Ethan</span>
+  </button>
   <button class="bottom-nav-item" data-tab="chat" onclick="setTab('chat')">
     <span class="nav-icon">💬</span><span class="nav-label">Chat</span>
   </button>
@@ -1147,7 +1285,7 @@ async function sb(path, method='GET', body) {
 // ============================================================
 let currentTab = 'today';
 function setTab(tab) {
-  ['today','archive','research','clients','chat','sources','myai','admin'].forEach(t => {
+  ['today','archive','research','clients','team','ethan','chat','sources','myai','admin'].forEach(t => {
     document.getElementById('mode-' + t).classList.toggle('hidden', t !== tab);
     document.getElementById('tab-' + t).classList.toggle('active', t === tab);
   });
@@ -1159,6 +1297,8 @@ function setTab(tab) {
   if (tab === 'myai')    loadMyAI();
   if (tab === 'research') loadResearch();
   if (tab === 'clients') loadClients();
+  if (tab === 'team') loadTeam();
+  if (tab === 'ethan') initEthan();
   syncBottomNav(tab);
 }
 
@@ -2521,6 +2661,235 @@ async function openClientDetail(slug) {
 function closeClientDetail() {
   document.getElementById('client-detail').style.display = 'none';
   document.getElementById('clients-grid').style.display = 'grid';
+}
+
+// ============================================================
+// TEAM TAB
+// ============================================================
+let teamPosts = [];
+async function loadTeam() {
+  loadTeamFeed();
+  loadTeamMembers();
+  loadTopSaves();
+}
+async function loadTeamFeed() {
+  const list = document.getElementById('team-feed-list');
+  if (!list) return;
+  list.innerHTML = '<div class="dash-loading"><div class="loading-ring"></div> Loading team feed...</div>';
+  const rows = await sb('tf_team_posts?order=created_at.desc&limit=40');
+  teamPosts = rows || [];
+  filterTeamFeed();
+}
+function filterTeamFeed() {
+  const list = document.getElementById('team-feed-list');
+  if (!list) return;
+  const typeFilter = document.getElementById('team-filter-type')?.value || '';
+  let posts = typeFilter ? teamPosts.filter(p => p.type === typeFilter) : teamPosts;
+  if (!posts.length) {
+    list.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text-dim);">
+      <div style="font-size:32px;margin-bottom:12px;">📭</div>
+      <div style="font-size:14px;font-weight:700;">Team feed is empty</div>
+      <div style="font-size:12px;margin-top:8px;">Save articles from Today's Brief using the + Team button on any article</div>
+    </div>`;
+    return;
+  }
+  list.innerHTML = posts.map(p => {
+    const timeStr = timeAgo(p.created_at);
+    const initial = (p.added_by_name || p.added_by || '?').charAt(0).toUpperCase();
+    const typeIcon = { article:'📰', note:'📝', video:'🎬', link:'🔗', card:'✨' }[p.type] || '📌';
+    return `<div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)'" onmouseout="this.style.boxShadow='none'">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;">${esc(initial)}</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:700;color:var(--text);">${esc(p.added_by_name || p.added_by?.split('@')[0] || 'Team')}</div>
+          <div style="font-size:10px;color:var(--text-dim);">${timeStr}</div>
+        </div>
+        <span style="font-size:10px;font-weight:700;padding:2px 8px;background:var(--surface);border-radius:4px;color:var(--text-dim);">${typeIcon} ${p.type}</span>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">${esc(p.title||'Untitled')}</div>
+      ${p.body ? `<div style="font-size:12px;color:var(--text-mid);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${esc(p.body)}</div>` : ''}
+      ${p.url ? `<a href="${esc(p.url)}" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;font-weight:600;">Open article →</a>` : ''}
+      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <button onclick="reactToPost('${p.id}','🔥')" style="padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:12px;cursor:pointer;">🔥</button>
+        <button onclick="reactToPost('${p.id}','💡')" style="padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:12px;cursor:pointer;">💡</button>
+        <button onclick="reactToPost('${p.id}','👍')" style="padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:12px;cursor:pointer;">👍</button>
+        <span style="font-size:10px;color:var(--text-dim);margin-left:auto;display:flex;align-items:center;">${p.reaction_count ? p.reaction_count + ' reactions' : ''}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function reactToPost(id, emoji) {
+  await sb('tf_team_posts?id=eq.' + id, 'PATCH', {
+    reaction_count: (teamPosts.find(p=>p.id===id)?.reaction_count||0) + 1
+  });
+  showToast(emoji + ' Reaction added');
+  loadTeamFeed();
+}
+async function loadTeamMembers() {
+  const list = document.getElementById('team-members-list');
+  if (!list) return;
+  const rows = await sb('tf_user_profiles?order=display_name.asc');
+  if (!rows || !rows.length) {
+    list.innerHTML = '<div style="padding:10px 18px;font-size:12px;color:var(--text-dim);">No profiles found.</div>';
+    return;
+  }
+  list.innerHTML = rows.map(u => {
+    const initial = (u.display_name||u.user_email||'?').charAt(0).toUpperCase();
+    const isMe = u.user_email === currentUser?.email;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 18px;transition:background 0.15s;cursor:pointer;" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
+      <div style="width:32px;height:32px;border-radius:50%;background:${u.avatar_color||'#4A8FD6'};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;">${initial}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;font-weight:700;color:var(--text);">${esc(u.display_name||u.user_email)}</div>
+        <div style="font-size:10px;color:var(--text-dim);">${esc(u.role_title||'Team')}</div>
+      </div>
+      ${isMe ? '<span style="font-size:9px;font-weight:700;padding:1px 6px;background:var(--accent-light);color:var(--accent);border-radius:4px;">You</span>' : ''}
+    </div>`;
+  }).join('');
+}
+async function loadTopSaves() {
+  const list = document.getElementById('team-top-saves');
+  if (!list) return;
+  const rows = await sb(
+    'tf_team_posts?order=reaction_count.desc,created_at.desc&limit=5&select=title,added_by_name,reaction_count,type,url'
+  );
+  if (!rows || !rows.length) {
+    list.innerHTML = '<div style="padding:10px 18px;font-size:12px;color:var(--text-dim);">Nothing saved yet this week.</div>';
+    return;
+  }
+  list.innerHTML = rows.map(p => `
+    <div style="padding:8px 18px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${esc(p.title)}</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:2px;">${esc(p.added_by_name||'Team')}</div>
+      </div>
+      ${p.reaction_count ? `<span style="font-size:11px;font-weight:700;color:var(--amber);flex-shrink:0;">${p.reaction_count}🔥</span>` : ''}
+    </div>`).join('');
+}
+
+// ============================================================
+// ETHAN TAB
+// ============================================================
+let ethanHistory = [];
+let ethanInitialized = false;
+async function initEthan() {
+  if (!ethanInitialized) {
+    ethanInitialized = true;
+    loadEthanMemory();
+    appendEthanMessage('ethan', `Hey — I'm Ethan. I've been watching what the team saves, reading every article that comes through, and keeping track of what's happening across all your client builds. I know about the work on Cornerstone, Sunstate, LAC, and the others. I have context on today's AI brief and everything your team has discussed.<br><br>Ask me anything. I'm not a chatbot — I'm a team member who never forgets anything.`);
+  }
+}
+async function loadEthanMemory() {
+  const list = document.getElementById('ethan-memory-list');
+  if (!list) return;
+  const [posts, clients, articles] = await Promise.all([
+    sb('tf_team_posts?select=id&limit=1000'),
+    sb('tf_clients?select=name,vertical&order=sort_order.asc'),
+    sb('tf_articles?select=id&limit=1000')
+  ]);
+  const postCount = (posts||[]).length;
+  const articleCount = (articles||[]).length;
+  const clientList = (clients||[]).map(c=>c.name).slice(0,4);
+  list.innerHTML = `
+    <div style="font-size:12px;color:var(--text-mid);line-height:1.8;">
+      <div style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+        <span>Articles analyzed</span>
+        <span style="font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent);">${articleCount}</span>
+      </div>
+      <div style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+        <span>Team saves</span>
+        <span style="font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent);">${postCount}</span>
+      </div>
+      <div style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+        <span>Active clients</span>
+        <span style="font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent);">${(clients||[]).length}</span>
+      </div>
+      <div style="padding:8px 0;font-size:11px;color:var(--text-dim);">
+        Clients: ${clientList.join(', ')}${(clients||[]).length > 4 ? ' +more' : ''}
+      </div>
+    </div>`;
+}
+async function sendEthanMessage(prefill) {
+  const input = document.getElementById('ethan-input');
+  const msg = prefill || input?.value?.trim();
+  if (!msg) return;
+  if (input) { input.value = ''; input.style.height = '44px'; }
+  appendEthanMessage('user', escHtml(msg));
+  ethanHistory.push({ role: 'user', content: msg });
+  const typing = document.getElementById('ethan-typing');
+  if (typing) typing.classList.add('show');
+  const msgs = document.getElementById('ethan-messages');
+  if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  const teamContext = await buildEthanContext();
+  try {
+    const resp = await fetch(TF_N8N_CHAT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: msg,
+        mode: 'brief',
+        context: teamContext,
+        context_date: currentViewDate,
+        user_email: currentUser?.email || 'anonymous',
+        session_id: 'ethan-' + chatSessionId,
+        messages: ethanHistory.slice(-10),
+        system_override: `You are Ethan, a named AI team member at ManageAI — an AI automation agency. You are NOT a chatbot or assistant. You are a senior analyst who has read everything the team has read, remembers every article and discussion, and has deep context on all client projects.
+Your personality: Direct. No-BS. Occasionally dry humor. Never say "Great question!" or "Certainly!". Push back when someone is missing something important. Sound like a sharp colleague who has been paying close attention.
+You know about these active client builds:
+- Cornerstone General Contractors: Contract Drafting + Proposal system (Make.com + n8n, SharePoint, Plumsail DOCX, MA-01 through MA-07 workflows)
+- Sunstate Medical Transport: Call-Ahead System (6 Make.com scenarios, Retell AI) + Volume Monitoring (4 scenarios, HTML dashboards)
+- LAC — Luxury Auto Collection: Analyst Agent v3.0 (12 n8n scenarios, Supabase edge functions qualify-vehicles + score-listings)
+- ManageAI Internal: Lead Booster Pro (38 active workflows, Pipedrive, Twilio, Claude), Emily BD AI sales trainer, Rebecca Sales AI voice agent, FRIDAY Build OS
+- ABCAC Member Portal: 14 Supabase tables, 10 n8n workflows, certification management
+- Noroc Naturals, Pacific Lifestyle Homes, Pavement Network, Reflow Medical, Sphere One, Vanguard Marketing Group, Vespa Hospitality: new clients, builds TBD
+The team: Brian Reinhart (CTO/build lead), Chad (CEO), Dan (Customer Success), Tony (Sales), Dave (Operations), Jacob (Developer/QA), Pat (Consumer Apps)
+Today's AI news context:
+${chatContextString || 'No brief loaded yet for today.'}
+Always tie answers back to what matters for ManageAI and its clients. Be specific. Be useful. Never be vague.`
+      })
+    });
+    const data = await resp.json();
+    if (typing) typing.classList.remove('show');
+    const reply = data.reply || 'Connection issue — try again.';
+    appendEthanMessage('ethan', formatChatReply(reply));
+    ethanHistory.push({ role: 'assistant', content: reply });
+  } catch(e) {
+    if (typing) typing.classList.remove('show');
+    appendEthanMessage('ethan', 'I\'m not connected yet — set the TF_N8N_CHAT webhook URL in config to wire me up.');
+  }
+}
+async function buildEthanContext() {
+  const [posts, saves] = await Promise.all([
+    sb('tf_team_posts?order=created_at.desc&limit=20&select=title,added_by_name,type,body,created_at'),
+    sb('tf_my_saves?user_email=eq.' + encodeURIComponent(currentUser?.email||'') + '&limit=10&select=created_at')
+  ]);
+  let ctx = `Today is ${currentViewDate}.\n\n`;
+  ctx += `TODAY'S AI BRIEF:\n${chatContextString || 'Not loaded.'}\n\n`;
+  if (posts && posts.length) {
+    ctx += `RECENT TEAM SAVES (${posts.length}):\n`;
+    ctx += posts.map(p => `- ${p.added_by_name||'Team'}: "${p.title}" (${p.type}, ${timeAgo(p.created_at)})`).join('\n');
+    ctx += '\n\n';
+  }
+  return ctx;
+}
+function appendEthanMessage(role, html) {
+  const msgs = document.getElementById('ethan-messages');
+  if (!msgs) return;
+  const now = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  const div = document.createElement('div');
+  div.style.animation = 'slideIn 0.25s ease';
+  if (role === 'user') {
+    div.className = 'msg-row user';
+    div.innerHTML = `<div class="msg-bubble user">${html}</div>`;
+  } else {
+    div.className = 'msg-row';
+    div.innerHTML = `
+      <div style="width:100%;">
+        <div class="msg-meta">Ethan &nbsp;·&nbsp; ${now}</div>
+        <div class="msg-bubble assistant">${html}</div>
+      </div>`;
+  }
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
 </script>
